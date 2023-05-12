@@ -1,17 +1,17 @@
 package com.flucas.libraryapi.api.service;
 
-import com.flucas.libraryapi.api.entity.Book;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import com.flucas.libraryapi.api.entity.Book;
+import com.flucas.libraryapi.api.repository.BookRepository;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class BookServiceImp implements BookService {
+    private BookRepository repository;
 
     @Override
     public Book save(Book book) {
-        var modelMapper = new ModelMapper();
-        var savedBook = modelMapper.map(book, Book.class);
-        savedBook.setId(10L);
-        return savedBook;
+        return repository.save(book);
     }
 }
