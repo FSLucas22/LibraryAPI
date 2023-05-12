@@ -1,10 +1,10 @@
 package com.flucas.libraryapi.api.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotEmpty;
 
 @Data
 @Builder
@@ -12,7 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookDTO {
     private Long id;
+    
+    @NotEmpty
     private String title;
+
+    @NotEmpty
     private String author;
+
+    @NotEmpty
     private String isbn;
 }

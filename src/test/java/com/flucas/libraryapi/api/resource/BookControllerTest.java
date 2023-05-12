@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.hamcrest.Matchers;
+
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
@@ -74,5 +76,19 @@ public class BookControllerTest {
                 .andExpect(jsonPath("title").value(savedBook.getTitle()))
                 .andExpect(jsonPath("author").value(savedBook.getAuthor()))
                 .andExpect(jsonPath("isbn").value(savedBook.getIsbn()));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro de validação quando não houver dados suficientes")
+    void shouldThrowError() throws Exception {
+        String json = new ObjectMapper().writeValueAsString(new BookDTO());
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BOOK_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", Matchers.hasSize(3)));
     }
 }
