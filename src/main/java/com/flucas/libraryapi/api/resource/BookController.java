@@ -15,6 +15,7 @@ import com.flucas.libraryapi.api.dto.BookDTO;
 import com.flucas.libraryapi.api.entity.Book;
 import com.flucas.libraryapi.api.exceptions.ApiErrors;
 import com.flucas.libraryapi.api.service.BookService;
+import com.flucas.libraryapi.exceptions.BusinessException;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -41,5 +42,11 @@ public class BookController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleValidationExceptions(MethodArgumentNotValidException exception) {
         return new ApiErrors(exception.getBindingResult());
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleBusinessExceptions(BusinessException exception) {
+        return new ApiErrors(exception);
     }
 }

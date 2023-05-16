@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flucas.libraryapi.api.dto.BookDTO;
 import com.flucas.libraryapi.api.entity.Book;
 import com.flucas.libraryapi.api.service.BookService;
+import com.flucas.libraryapi.exceptions.BusinessException;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,27 +43,30 @@ public class BookControllerTest {
     @MockBean
     private BookService service;
 
+    private BookDTO dto;
+
+    @BeforeEach
+    public void setUp() {
+        dto = BookDTO.builder()
+                .title("Livro Teste x")
+                .author("Autor Teste x")
+                .isbn("123123 x").build();
+    }
+
     @Test
     @DisplayName("Deve criar um livro com sucesso")
     void createBookTest() throws Exception {
 
-        var dto = BookDTO
-                .builder()
+        var book = Book.builder()
+                .id(10L)
                 .title("Livro Teste x")
                 .author("Autor Teste x")
-                .isbn("123123 x").build();
-
-        var savedBook = Book
-                .builder()
-                .id(10L)
-                .title(dto.getTitle())
-                .author(dto.getAuthor())
-                .isbn(dto.getIsbn())
+                .isbn("123123 x")
                 .build();
 
         BDDMockito
                 .given(service.save(Mockito.any(Book.class)))
-                .willReturn(savedBook);
+                .willReturn(book);
 
         String json = new ObjectMapper().writeValueAsString(dto);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -72,10 +78,10 @@ public class BookControllerTest {
         mvc
                 .perform(request)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(savedBook.getId()))
-                .andExpect(jsonPath("title").value(savedBook.getTitle()))
-                .andExpect(jsonPath("author").value(savedBook.getAuthor()))
-                .andExpect(jsonPath("isbn").value(savedBook.getIsbn()));
+                .andExpect(jsonPath("id").value(book.getId()))
+                .andExpect(jsonPath("title").value(book.getTitle()))
+                .andExpect(jsonPath("author").value(book.getAuthor()))
+                .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
 
     @Test
@@ -90,5 +96,30 @@ public class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", Matchers.hasSize(3)));
+    }
+
+    @Test
+    @DisplayName("Não deve cadastrar ISBN repetido")
+    public void shouldNotRepeatIsbn() throws Exception {
+        String json = new ObjectMapper().writeValueAsString(dto);
+        String msg = "ISBN já cadastrado.";
+        BDDMockito.given(service.save(Mockito.any(Book.class))).willThrow(
+                new BusinessException(msg)
+        );
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BOOK_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+        
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("errors", 
+                        Matchers.hasSize(1)))
+                .andExpect(
+                        jsonPath("errors[0]")
+                        .value(msg));
     }
 }
