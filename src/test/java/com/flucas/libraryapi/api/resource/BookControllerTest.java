@@ -1,16 +1,19 @@
 package com.flucas.libraryapi.api.resource;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flucas.libraryapi.api.dto.BookDTO;
-import com.flucas.libraryapi.exceptions.BusinessException;
-import com.flucas.libraryapi.model.entity.Book;
-import com.flucas.libraryapi.service.BookService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +27,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Optional;
-
-import org.hamcrest.Matchers;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flucas.libraryapi.api.dto.BookDTO;
+import com.flucas.libraryapi.exceptions.BusinessException;
+import com.flucas.libraryapi.model.entity.Book;
+import com.flucas.libraryapi.service.BookService;
 
 
 @ExtendWith(SpringExtension.class)
@@ -161,7 +163,8 @@ public class BookControllerTest {
     @DisplayName("Deve deletar um livro")
     public void shouldDeleteBook() throws Exception {
         Long id = 1L;
-        BDDMockito.given(service.getById(id)).willReturn(Optional.of(Book.builder().id(id).build()));
+        ArgumentCaptor<Book> captor = ArgumentCaptor.forClass(Book.class);
+
         var request = MockMvcRequestBuilders
                 .delete(BOOK_API.concat("/" + id))
                 .accept(MediaType.APPLICATION_JSON);
@@ -169,6 +172,7 @@ public class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isNoContent());
         
-        
+        verify(service).delete(captor.capture());
+        assertEquals(id, captor.getValue().getId());
     }
 }

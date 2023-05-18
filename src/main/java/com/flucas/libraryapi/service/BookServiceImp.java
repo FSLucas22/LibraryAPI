@@ -27,4 +27,9 @@ public class BookServiceImp implements BookService {
     public Optional<Book> getById(Long id) {
         return Optional.empty();
     }
+
+    @Override
+    public void delete(Book any) {
+        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    }
 }
