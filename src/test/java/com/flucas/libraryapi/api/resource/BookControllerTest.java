@@ -163,7 +163,8 @@ public class BookControllerTest {
     @DisplayName("Deve deletar um livro")
     public void shouldDeleteBook() throws Exception {
         Long id = 1L;
-        ArgumentCaptor<Book> captor = ArgumentCaptor.forClass(Book.class);
+        var bookToDelete = Book.builder().id(id).build();
+        BDDMockito.given(service.getById(id)).willReturn(Optional.of(bookToDelete));
 
         var request = MockMvcRequestBuilders
                 .delete(BOOK_API.concat("/" + id))
@@ -172,7 +173,6 @@ public class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isNoContent());
         
-        verify(service).delete(captor.capture());
-        assertEquals(id, captor.getValue().getId());
+        verify(service).delete(bookToDelete);
     }
 }
