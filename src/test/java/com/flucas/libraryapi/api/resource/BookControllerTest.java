@@ -165,8 +165,7 @@ public class BookControllerTest {
         BDDMockito.given(service.getById(id)).willReturn(Optional.of(bookToDelete));
 
         var request = MockMvcRequestBuilders
-                .delete(BOOK_API.concat("/" + id))
-                .accept(MediaType.APPLICATION_JSON);
+                .delete(BOOK_API.concat("/" + id));
 
         mvc.perform(request)
                 .andExpect(status().isNoContent());
