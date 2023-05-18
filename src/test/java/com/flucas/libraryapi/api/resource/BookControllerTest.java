@@ -156,4 +156,19 @@ public class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void shouldDeleteBook() throws Exception {
+        Long id = 1L;
+        BDDMockito.given(service.getById(id)).willReturn(Optional.of(Book.builder().id(id).build()));
+        var request = MockMvcRequestBuilders
+                .delete(BOOK_API.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isNoContent());
+        
+        
+    }
 }
