@@ -198,12 +198,14 @@ public class BookControllerTest {
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
-
+        
         mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(book.getId()))
                 .andExpect(jsonPath("title").value(book.getTitle()))
                 .andExpect(jsonPath("author").value(book.getAuthor()))
                 .andExpect(jsonPath("isbn").value(book.getIsbn()));
+        
+        verify(service).update(book);
     }
 }
