@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.BookDTO;
 import com.flucas.libraryapi.api.exceptions.ApiErrors;
@@ -54,7 +55,8 @@ public class BookController {
 
     @GetMapping("{id}")
     public BookDTO get(@PathVariable Long id) {
-        Book book = service.getById(id).get();
-        return modelMapper.map(book, BookDTO.class);
+        return service.getById(id)
+                    .map(b -> modelMapper.map(b, BookDTO.class))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }
