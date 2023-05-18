@@ -53,7 +53,8 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public Book get(@PathVariable Long id) {
-        return null;
+    public BookDTO get(@PathVariable Long id) {
+        Book book = service.getById(id).get();
+        return modelMapper.map(book, BookDTO.class);
     }
 }
