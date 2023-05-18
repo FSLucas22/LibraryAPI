@@ -27,6 +27,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 import org.hamcrest.Matchers;
 
 
@@ -44,6 +46,7 @@ public class BookControllerTest {
     private BookService service;
 
     private BookDTO dto;
+    private Book book;
 
     @BeforeEach
     public void setUp() {
@@ -51,18 +54,18 @@ public class BookControllerTest {
                 .title("Livro Teste x")
                 .author("Autor Teste x")
                 .isbn("123123 x").build();
-    }
 
-    @Test
-    @DisplayName("Deve criar um livro com sucesso")
-    void createBookTest() throws Exception {
-
-        var book = Book.builder()
+        book = Book.builder()
                 .id(10L)
                 .title("Livro Teste x")
                 .author("Autor Teste x")
                 .isbn("123123 x")
                 .build();
+    }
+
+    @Test
+    @DisplayName("Deve criar um livro com sucesso")
+    void createBookTest() throws Exception {
 
         BDDMockito
                 .given(service.save(Mockito.any(Book.class)))
@@ -121,5 +124,23 @@ public class BookControllerTest {
                 .andExpect(
                         jsonPath("errors[0]")
                         .value(msg));
+    }
+
+    @Test
+    @DisplayName("Deve retornar os detalhes de um livro")
+    public void shouldReturnBookDetails() throws Exception {
+        Long id = 10L;
+        BDDMockito.given(service.getById(id)).willReturn(Optional.of(book));
+
+        var request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON);
+        
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("title").value(book.getTitle()))
+                .andExpect(jsonPath("author").value(book.getAuthor()))
+                .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
 }

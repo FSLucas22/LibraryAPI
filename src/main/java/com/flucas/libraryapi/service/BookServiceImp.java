@@ -1,5 +1,7 @@
 package com.flucas.libraryapi.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.flucas.libraryapi.exceptions.BusinessException;
@@ -19,5 +21,10 @@ public class BookServiceImp implements BookService {
             throw new BusinessException("ISBN já cadastrado.");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getById(Long id) {
+        return Optional.empty();
     }
 }
