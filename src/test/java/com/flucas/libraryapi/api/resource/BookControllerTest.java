@@ -3,9 +3,9 @@ package com.flucas.libraryapi.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flucas.libraryapi.api.dto.BookDTO;
-import com.flucas.libraryapi.api.entity.Book;
-import com.flucas.libraryapi.api.service.BookService;
 import com.flucas.libraryapi.exceptions.BusinessException;
+import com.flucas.libraryapi.model.entity.Book;
+import com.flucas.libraryapi.service.BookService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

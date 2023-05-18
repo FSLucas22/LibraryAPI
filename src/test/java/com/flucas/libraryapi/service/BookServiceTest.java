@@ -12,11 +12,10 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import com.flucas.libraryapi.api.entity.Book;
-import com.flucas.libraryapi.api.repository.BookRepository;
-import com.flucas.libraryapi.api.service.BookService;
-import com.flucas.libraryapi.api.service.BookServiceImp;
+
 import com.flucas.libraryapi.exceptions.BusinessException;
+import com.flucas.libraryapi.model.entity.Book;
+import com.flucas.libraryapi.model.repository.BookRepository;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

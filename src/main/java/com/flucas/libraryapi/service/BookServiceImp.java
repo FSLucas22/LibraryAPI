@@ -1,9 +1,10 @@
-package com.flucas.libraryapi.api.service;
+package com.flucas.libraryapi.service;
 
 import org.springframework.stereotype.Service;
-import com.flucas.libraryapi.api.entity.Book;
-import com.flucas.libraryapi.api.repository.BookRepository;
+
 import com.flucas.libraryapi.exceptions.BusinessException;
+import com.flucas.libraryapi.model.entity.Book;
+import com.flucas.libraryapi.model.repository.BookRepository;
 
 import lombok.AllArgsConstructor;
 
