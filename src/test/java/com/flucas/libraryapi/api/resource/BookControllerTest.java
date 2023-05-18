@@ -143,4 +143,17 @@ public class BookControllerTest {
                 .andExpect(jsonPath("author").value(book.getAuthor()))
                 .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
+
+    @Test
+    @DisplayName("Deve retornar resource not found quando o livro não existe")
+    public void shouldReturnResourceNotFound() throws Exception {
+        BDDMockito.given(service.getById(Mockito.anyLong())).willReturn(Optional.empty());
+
+        var request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + 10))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
 }
