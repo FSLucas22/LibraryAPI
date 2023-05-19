@@ -23,16 +23,16 @@ import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.service.BookService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping("/api/books")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookController {
 
-    private BookService service;
-    private ModelMapper modelMapper;
+    private final BookService service;
+    private final ModelMapper modelMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
