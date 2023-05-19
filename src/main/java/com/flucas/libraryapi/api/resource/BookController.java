@@ -73,6 +73,11 @@ public class BookController {
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public BookDTO update(@PathVariable Long id, @RequestBody @Valid BookDTO dto) {
-        return modelMapper.map(service.getById(id).get(), BookDTO.class);
+        var book = service.getById(id).get();
+        book.setAuthor(dto.getAuthor());
+        book.setTitle(dto.getTitle());
+        assert book.getAuthor() == dto.getAuthor();
+        assert book.getTitle() == dto.getTitle();
+        return modelMapper.map(book, BookDTO.class);
     }
 }
