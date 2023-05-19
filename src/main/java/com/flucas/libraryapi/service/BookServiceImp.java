@@ -8,12 +8,12 @@ import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.repository.BookRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookServiceImp implements BookService {
-    private BookRepository repository;
+    private final BookRepository repository;
 
     @Override
     public Book save(Book book) {
