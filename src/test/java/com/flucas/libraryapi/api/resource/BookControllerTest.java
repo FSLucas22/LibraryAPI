@@ -209,8 +209,8 @@ public class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(book.getId()))
-                .andExpect(jsonPath("title").value("Novo autor"))
-                .andExpect(jsonPath("author").value("Novo titulo"))
+                .andExpect(jsonPath("title").value("Novo titulo"))
+                .andExpect(jsonPath("author").value("Novo autor"))
                 .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
 }
