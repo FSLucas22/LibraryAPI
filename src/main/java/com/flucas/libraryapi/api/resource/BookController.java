@@ -78,6 +78,6 @@ public class BookController {
         book.setTitle(dto.getTitle());
         assert book.getAuthor() == dto.getAuthor();
         assert book.getTitle() == dto.getTitle();
-        return modelMapper.map(book, BookDTO.class);
+        return modelMapper.map(service.update(book), BookDTO.class);
     }
 }
