@@ -223,4 +223,28 @@ public class BookControllerTest {
         
         verify(service).update(book);
     }
+
+    @Test
+    @DisplayName("Deve retornar resource not found ao tentar atualizar um livro inexistente")
+    public void shouldNotUpdateNotFoundBook() throws Exception {
+        Long id = 1L;
+        var json = new ObjectMapper().writeValueAsString(Book.builder()
+                .id(id)
+                .author("Novo autor")
+                .title("Novo titulo")
+                .isbn(book.getIsbn())
+                .build()
+        );
+
+        BDDMockito.given(service.getById(id)).willReturn(Optional.empty());
+
+        var request = MockMvcRequestBuilders
+                .put(BOOK_API.concat("/" + id))
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);;
+
+        mvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
 }
