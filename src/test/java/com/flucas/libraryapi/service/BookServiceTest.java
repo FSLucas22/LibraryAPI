@@ -2,6 +2,8 @@ package com.flucas.libraryapi.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Optional;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.repository.BookRepository;
+
+import jakarta.persistence.Id;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -73,5 +77,20 @@ public class BookServiceTest {
             .hasMessage("ISBN já cadastrado.");
         
         Mockito.verify(repository, Mockito.never()).save(book);
+    }
+
+    @Test
+    @DisplayName("Service deve retornar um livro pelo id")
+    public void shouldReturnBookById() {
+        long id = 1L;
+        book.setId(id);
+        Mockito.when(repository.findById(id))
+            .thenReturn(Optional.of(book));
+        var foundBook = service.getById(id);
+        Assertions.assertThat(foundBook.isPresent()).isTrue();
+        Assertions.assertThat(foundBook.get().getId()).isEqualTo(book.getId());
+        Assertions.assertThat(foundBook.get().getTitle()).isEqualTo(book.getTitle());
+        Assertions.assertThat(foundBook.get().getAuthor()).isEqualTo(book.getAuthor());
+        Assertions.assertThat(foundBook.get().getIsbn()).isEqualTo(book.getIsbn());
     }
 }
