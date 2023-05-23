@@ -1,6 +1,7 @@
 package com.flucas.libraryapi.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.util.Optional;
 
@@ -18,8 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.repository.BookRepository;
-
-import jakarta.persistence.Id;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -92,5 +91,13 @@ public class BookServiceTest {
         Assertions.assertThat(foundBook.get().getTitle()).isEqualTo(book.getTitle());
         Assertions.assertThat(foundBook.get().getAuthor()).isEqualTo(book.getAuthor());
         Assertions.assertThat(foundBook.get().getIsbn()).isEqualTo(book.getIsbn());
+    }
+
+    @Test
+    @DisplayName("Service deve retornar empty quando o id não existe")
+    public void shouldReturnEmptyWhenIdNotFound() {
+        Mockito.when(repository.findById(anyLong()))
+            .thenReturn(Optional.empty());
+        Assertions.assertThat(service.getById(1L).isEmpty()).isTrue();
     }
 }
