@@ -1,7 +1,11 @@
 package com.flucas.libraryapi.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -31,14 +35,18 @@ public class BookServiceTest {
     @MockBean
     private BookRepository repository;
 
-    @BeforeEach
-    public void setup() {
-        service = new BookServiceImp(repository);
-        book = Book.builder()
+    public Book createValidBook() {
+        return Book.builder()
             .isbn("123")
             .author("Fulano")
             .title("Livro teste")
             .build();
+    }
+
+    @BeforeEach
+    public void setup() {
+        service = new BookServiceImp(repository);
+        book = createValidBook();
     }
 
     @Test
@@ -99,5 +107,71 @@ public class BookServiceTest {
         Mockito.when(repository.findById(anyLong()))
             .thenReturn(Optional.empty());
         Assertions.assertThat(service.getById(1L).isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve excluir um livro")
+    public void serviceShouldDeleteBook() {
+        book.setId(1L);
+
+        service.delete(book);
+
+        verify(repository).delete(book);
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalArgumentException ao passar livro ou id nulo")
+    public void serviceShouldThrowExpectionWhenDeletingInvalidBook() {
+        book.setId(null);
+        Throwable nullBookException = Assertions.catchThrowable(() -> service.delete(null));
+        Throwable nullIdException = Assertions.catchThrowable(() -> service.delete(book));
+
+        Assertions.assertThat(nullBookException)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Id do livro não pode ser nulo.");
+
+        Assertions.assertThat(nullIdException)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Id do livro não pode ser nulo.");
+
+        Mockito.verify(repository, never()).delete(any(Book.class));
+    }
+
+    @Test
+    @DisplayName("Deve atualizar um livro")
+    public void serviceShouldUpdateBook() {
+        long id = 1L;
+        String valorParaAtualizar = "Outro autor";
+        book.setId(id);
+        var savedBook = createValidBook();
+        savedBook.setId(id);
+        savedBook.setAuthor(valorParaAtualizar);
+
+        when(repository.save(book)).thenReturn(savedBook);
+        book.setAuthor(valorParaAtualizar);
+        
+        var updatedBook = service.update(book);
+        Assertions.assertThat(updatedBook.getId()).isEqualTo(savedBook.getId());
+        Assertions.assertThat(updatedBook.getAuthor()).isEqualTo(savedBook.getAuthor());
+        Assertions.assertThat(updatedBook.getTitle()).isEqualTo(savedBook.getTitle());
+        Assertions.assertThat(updatedBook.getIsbn()).isEqualTo(savedBook.getIsbn());
+    }
+
+    @Test
+    @DisplayName("Deve lançar IllegalArgumentException ao passar livro ou id nulo")
+    public void serviceShouldThrowExpectionWhenUpdatingInvalidBook() {
+        book.setId(null);
+        Throwable nullBookException = Assertions.catchThrowable(() -> service.update(null));
+        Throwable nullIdException = Assertions.catchThrowable(() -> service.update(book));
+
+        Assertions.assertThat(nullBookException)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Id do livro não pode ser nulo.");
+
+        Assertions.assertThat(nullIdException)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Id do livro não pode ser nulo.");
+
+        Mockito.verify(repository, never()).save(any(Book.class));
     }
 }

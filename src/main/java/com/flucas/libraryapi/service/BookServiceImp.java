@@ -29,13 +29,18 @@ public class BookServiceImp implements BookService {
     }
 
     @Override
-    public void delete(Book any) {
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Book book) {
+        if (book == null || book.getId() == null) {
+            throw new IllegalArgumentException("Id do livro não pode ser nulo.");
+        }
+        repository.delete(book);
     }
 
     @Override
     public Book update(Book book) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        if (book == null || book.getId() == null) {
+            throw new IllegalArgumentException("Id do livro não pode ser nulo.");
+        }
+        return repository.save(book);
     }
 }
