@@ -1,7 +1,12 @@
 package com.flucas.libraryapi.api.resource;
 
 
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -80,5 +85,16 @@ public class BookController {
                 return modelMapper.map(service.update(book), BookDTO.class);
             })
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping
+    public Page<BookDTO> find(BookDTO dto, Pageable pageRequest) {
+        Book filter = modelMapper.map(dto, Book.class);
+        var result = service.find(filter, pageRequest);
+        return new PageImpl<BookDTO>(
+            result.getContent()
+            .stream()
+            .map(book -> modelMapper.map(book, BookDTO.class))
+            .collect(Collectors.toList()), pageRequest, result.getTotalElements());
     }
 }
