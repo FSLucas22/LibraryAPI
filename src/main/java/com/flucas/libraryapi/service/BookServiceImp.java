@@ -2,6 +2,8 @@ package com.flucas.libraryapi.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.flucas.libraryapi.exceptions.BusinessException;
@@ -42,5 +44,11 @@ public class BookServiceImp implements BookService {
             throw new IllegalArgumentException("Id do livro não pode ser nulo.");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Page<Book> find(Book filter, Pageable pageRequest) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'find'");
     }
 }
