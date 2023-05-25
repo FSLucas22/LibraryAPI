@@ -1,5 +1,6 @@
 package com.flucas.libraryapi.api.resource;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,6 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDTO create(@RequestBody LoanDTO dto) {
-        return null;
+        return dto;
     }
 }

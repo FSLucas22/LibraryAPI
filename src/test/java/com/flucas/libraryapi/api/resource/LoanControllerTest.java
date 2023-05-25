@@ -47,7 +47,7 @@ public class LoanControllerTest {
     @Test
     @DisplayName("Deve realizar um emprestimo")
     public void shouldLoanBook() throws Exception {
-        LoanDTO dto = LoanDTO.builder().isbn("123").custumer("custumer").build();
+        LoanDTO dto = LoanDTO.builder().isbn("123").customer("customer").build();
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(
@@ -56,7 +56,7 @@ public class LoanControllerTest {
                             .isbn("isbn")
                             .build()));
         
-        Loan loan = null;
+        Loan loan = Loan.builder().isbn("123").customer("customer").build();
 
         BDDMockito.given(loanService.save(any(Loan.class))).willReturn(loan);
 
@@ -67,6 +67,8 @@ public class LoanControllerTest {
 
         mvc
             .perform(request)
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("isbn").value(loan.getIsbn()))
+            .andExpect(jsonPath("customer").value(loan.getCustomer()));
     }
 }
