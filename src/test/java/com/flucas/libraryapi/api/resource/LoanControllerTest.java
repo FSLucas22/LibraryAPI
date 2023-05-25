@@ -56,7 +56,7 @@ public class LoanControllerTest {
                             .isbn("isbn")
                             .build()));
         
-        Loan loan = Loan.builder().isbn("123").customer("customer").build();
+        Loan loan = Loan.builder().id(10L).isbn("123").customer("customer").build();
 
         BDDMockito.given(loanService.save(any(Loan.class))).willReturn(loan);
 
@@ -68,6 +68,7 @@ public class LoanControllerTest {
         mvc
             .perform(request)
             .andExpect(status().isCreated())
+            .andExpect(jsonPath("id").value(loan.getId()))
             .andExpect(jsonPath("isbn").value(loan.getIsbn()))
             .andExpect(jsonPath("customer").value(loan.getCustomer()));
     }

@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class Loan {
+    private Long id;
     private String isbn;
     private String customer;
 }
