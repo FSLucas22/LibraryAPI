@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -31,6 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.repository.BookRepository;
+import com.flucas.libraryapi.service.interfaces.BookService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

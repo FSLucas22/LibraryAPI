@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.repository.BookRepository;
+import com.flucas.libraryapi.service.interfaces.BookService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,5 +58,11 @@ public class BookServiceImp implements BookService {
             .withIgnoreNullValues()
             .withStringMatcher(StringMatcher.CONTAINING));
         return repository.findAll(example, pageRequest);
+    }
+
+    @Override
+    public Optional<Book> getByIsbn(String isbn) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getByIsbn'");
     }
 }
