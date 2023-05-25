@@ -72,4 +72,22 @@ public class LoanControllerTest {
             .andExpect(status().isCreated())
             .andExpect(content().string("10"));
     }
+
+    @Test
+    @DisplayName("Não deve realizar emprestimo quando o livro não existe")
+    public void shouldNotLoanInexistentBook() throws Exception {
+        LoanDTO dto = LoanDTO.builder().isbn("123").customer("customer").build();
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(Optional.empty());
+
+        var request = MockMvcRequestBuilders.post(LOAN_API)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
+
+        mvc
+            .perform(request)
+            .andExpect(status().isNotFound());
+    }
 }
