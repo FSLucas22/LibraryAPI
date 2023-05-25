@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
 import com.flucas.libraryapi.model.entity.Loan;
+import com.flucas.libraryapi.service.interfaces.BookService;
 import com.flucas.libraryapi.service.interfaces.LoanService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,13 +23,17 @@ import lombok.RequiredArgsConstructor;
 public class LoanController {
 
     private final ModelMapper modelMapper;
-    private final LoanService service;
+    private final LoanService loanService;
+    private final BookService bookService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody LoanDTO dto) {
+        if (bookService.getByIsbn(dto.getIsbn()).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } 
         var loanToSave = modelMapper.map(dto, Loan.class);
-        var loan = service.save(loanToSave);
+        var loan = loanService.save(loanToSave);
         return loan.getId();
     }
 }
