@@ -39,7 +39,7 @@ import com.flucas.libraryapi.service.BookService;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = BookController.class)
 public class BookControllerTest {
     static String BOOK_API = "/api/books";
 
