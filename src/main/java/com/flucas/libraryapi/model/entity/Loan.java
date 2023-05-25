@@ -1,5 +1,13 @@
 package com.flucas.libraryapi.model.entity;
 
-public class Loan {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
+@AllArgsConstructor
+public class Loan {
+    private String isbn;
+    private String customer;
 }
