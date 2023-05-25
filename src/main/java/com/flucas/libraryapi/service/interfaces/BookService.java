@@ -1,4 +1,4 @@
-package com.flucas.libraryapi.service;
+package com.flucas.libraryapi.service.interfaces;
 
 import java.util.Optional;
 
@@ -17,4 +17,6 @@ public interface BookService {
     Book update(Book book);
 
     Page<Book> find(Book filter, Pageable pageRequest);
+
+    Optional<Book> getByIsbn(String isbn);
 }
