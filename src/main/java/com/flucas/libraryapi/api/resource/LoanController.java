@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
+import com.flucas.libraryapi.model.entity.Loan;
+import com.flucas.libraryapi.service.interfaces.LoanService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,10 +20,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoanController {
 
+    private final ModelMapper modelMapper;
+    private final LoanService service;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDTO create(@RequestBody LoanDTO dto) {
-        dto.setId(10L);
-        return dto;
+        var loanToSave = modelMapper.map(dto, Loan.class);
+        var loan = service.save(loanToSave);
+        return modelMapper.map(loan, LoanDTO.class);
     }
 }
