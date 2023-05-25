@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoanDTO {
     private String isbn;
-    private String custumer;
+    private String customer;
 }
