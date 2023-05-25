@@ -5,6 +5,8 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,8 +70,6 @@ public class LoanControllerTest {
         mvc
             .perform(request)
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("id").value(loan.getId()))
-            .andExpect(jsonPath("isbn").value(loan.getIsbn()))
-            .andExpect(jsonPath("customer").value(loan.getCustomer()));
+            .andExpect(content().string("10"));
     }
 }
