@@ -2,8 +2,11 @@ package com.flucas.libraryapi.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 
 import com.flucas.libraryapi.exceptions.BusinessException;
@@ -48,7 +51,11 @@ public class BookServiceImp implements BookService {
 
     @Override
     public Page<Book> find(Book filter, Pageable pageRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'find'");
+        Example<Book> example = Example.of(filter, 
+        ExampleMatcher.matching()
+            .withIgnoreCase()
+            .withIgnoreNullValues()
+            .withStringMatcher(StringMatcher.CONTAINING));
+        return repository.findAll(example, pageRequest);
     }
 }
