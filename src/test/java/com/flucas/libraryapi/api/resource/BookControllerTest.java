@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flucas.libraryapi.api.dto.BookDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
-import com.flucas.libraryapi.service.BookService;
+import com.flucas.libraryapi.service.interfaces.BookService;
 
 
 @ExtendWith(SpringExtension.class)
@@ -41,7 +41,7 @@ import com.flucas.libraryapi.service.BookService;
 @ActiveProfiles("test")
 @WebMvcTest(controllers = BookController.class)
 public class BookControllerTest {
-    static String BOOK_API = "/api/books";
+    static final String BOOK_API = "/api/books";
 
     @Autowired
     private MockMvc mvc;
