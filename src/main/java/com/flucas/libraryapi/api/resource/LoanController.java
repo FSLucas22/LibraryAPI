@@ -25,9 +25,9 @@ public class LoanController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LoanDTO create(@RequestBody LoanDTO dto) {
+    public Long create(@RequestBody LoanDTO dto) {
         var loanToSave = modelMapper.map(dto, Loan.class);
         var loan = service.save(loanToSave);
-        return modelMapper.map(loan, LoanDTO.class);
+        return loan.getId();
     }
 }
