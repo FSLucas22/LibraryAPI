@@ -25,7 +25,7 @@ import com.flucas.libraryapi.api.dto.BookDTO;
 import com.flucas.libraryapi.api.exceptions.ApiErrors;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
-import com.flucas.libraryapi.service.BookService;
+import com.flucas.libraryapi.service.interfaces.BookService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
