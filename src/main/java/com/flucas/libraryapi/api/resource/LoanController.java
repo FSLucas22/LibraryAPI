@@ -21,6 +21,7 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LoanDTO create(@RequestBody LoanDTO dto) {
+        dto.setId(10L);
         return dto;
     }
 }
