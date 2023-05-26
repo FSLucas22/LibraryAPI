@@ -97,7 +97,7 @@ public class LoanControllerTest {
 
     @Test
     @DisplayName("Deve retornar BAD REQUEST quando não houver dados o suficiente")
-    public void shouldOnlySaveValidBooks() throws Exception {
+    public void shouldOnlySaveValidLoans() throws Exception {
         LoanDTO dto = LoanDTO.builder().build();
         String json = new ObjectMapper().writeValueAsString(dto);
         var request = MockMvcRequestBuilders.post(LOAN_API)
