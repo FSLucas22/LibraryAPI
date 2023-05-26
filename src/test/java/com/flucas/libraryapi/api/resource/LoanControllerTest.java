@@ -90,4 +90,17 @@ public class LoanControllerTest {
             .perform(request)
             .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Deve retornar BAD REQUEST quando não houver dados o suficiente")
+    public void shouldOnlySaveValidBooks() throws Exception {
+        LoanDTO dto = LoanDTO.builder().build();
+        String json = new ObjectMapper().writeValueAsString(dto);
+        var request = MockMvcRequestBuilders.post(LOAN_API)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
+        
+        mvc.perform(request).andExpect(status().isBadRequest());
+    }
 }
