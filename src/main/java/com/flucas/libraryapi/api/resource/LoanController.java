@@ -2,6 +2,8 @@ package com.flucas.libraryapi.api.resource;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
+import com.flucas.libraryapi.api.exceptions.ApiErrors;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.service.interfaces.BookService;
 import com.flucas.libraryapi.service.interfaces.LoanService;
@@ -36,5 +39,11 @@ public class LoanController {
         var loanToSave = modelMapper.map(dto, Loan.class);
         var loan = loanService.save(loanToSave);
         return loan.getId();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleValidationExceptions(MethodArgumentNotValidException exception) {
+        return new ApiErrors(exception.getBindingResult());
     }
 }
