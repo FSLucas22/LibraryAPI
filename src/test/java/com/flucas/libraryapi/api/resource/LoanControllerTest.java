@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,6 +102,9 @@ public class LoanControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(json);
         
-        mvc.perform(request).andExpect(status().isBadRequest());
+        mvc
+            .perform(request)
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("errors", Matchers.hasSize(2)));
     }
 }
