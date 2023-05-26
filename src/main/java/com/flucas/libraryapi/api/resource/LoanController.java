@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
-import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.service.interfaces.BookService;
 import com.flucas.libraryapi.service.interfaces.LoanService;
