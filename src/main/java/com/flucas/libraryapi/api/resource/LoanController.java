@@ -14,6 +14,7 @@ import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.service.interfaces.BookService;
 import com.flucas.libraryapi.service.interfaces.LoanService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -28,7 +29,7 @@ public class LoanController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long create(@RequestBody LoanDTO dto) {
+    public Long create(@RequestBody @Valid LoanDTO dto) {
         if (bookService.getByIsbn(dto.getIsbn()).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } 
