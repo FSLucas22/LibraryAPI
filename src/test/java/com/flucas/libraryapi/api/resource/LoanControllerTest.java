@@ -75,7 +75,7 @@ public class LoanControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar NOT FOUND quando o livro não existe")
+    @DisplayName("Deve retornar BAD REQUEST quando o livro não existe")
     public void shouldNotLoanInexistentBook() throws Exception {
         LoanDTO dto = LoanDTO.builder().isbn("123").customer("customer").build();
         String json = new ObjectMapper().writeValueAsString(dto);
@@ -89,7 +89,7 @@ public class LoanControllerTest {
 
         mvc
             .perform(request)
-            .andExpect(status().isNotFound());
+            .andExpect(status().isBadRequest());
     }
 
     @Test
