@@ -34,7 +34,7 @@ public class LoanController {
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody @Valid LoanDTO dto) {
         if (bookService.getByIsbn(dto.getIsbn()).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } 
         var loanToSave = modelMapper.map(dto, Loan.class);
         var loan = loanService.save(loanToSave);
