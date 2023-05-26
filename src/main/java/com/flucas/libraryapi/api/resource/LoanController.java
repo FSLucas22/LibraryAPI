@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
@@ -31,7 +32,8 @@ public class LoanController {
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody @Valid LoanDTO dto) {
         if (bookService.getByIsbn(dto.getIsbn()).isEmpty()) {
-            throw new BusinessException("Book not found for passed isbn");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Book not found for passed isbn");
         } 
         var loanToSave = modelMapper.map(dto, Loan.class);
         var loan = loanService.save(loanToSave);
