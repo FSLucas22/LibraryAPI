@@ -133,6 +133,14 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Service deve retornar empty quando o isbn não existe")
+    public void shouldReturnEmptyWhenIsbnNotFound() {
+        Mockito.when(repository.findByIsbn("123"))
+            .thenReturn(Optional.empty());
+        Assertions.assertThat(service.getByIsbn("123")).isEmpty();
+    }
+
+    @Test
     @DisplayName("Deve excluir um livro")
     public void serviceShouldDeleteBook() {
         book.setId(1L);
