@@ -62,7 +62,6 @@ public class BookServiceImp implements BookService {
 
     @Override
     public Optional<Book> getByIsbn(String isbn) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByIsbn'");
+        return repository.findByIsbn(isbn);
     }
 }
