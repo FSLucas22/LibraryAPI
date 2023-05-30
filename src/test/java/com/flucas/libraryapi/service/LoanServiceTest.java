@@ -12,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.model.repository.LoanRepository;
-import com.flucas.libraryapi.service.interfaces.BookService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
