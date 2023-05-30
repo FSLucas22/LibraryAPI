@@ -118,6 +118,21 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Service deve retornar um livro pelo isbn")
+    public void shouldReturnBookByIsbn() {
+        Long id = 1L;
+        book.setId(id);
+        Mockito.when(repository.findByIsbn("123"))
+            .thenReturn(Optional.of(book));
+        var foundBook = service.getById(id);
+        Assertions.assertThat(foundBook.isPresent()).isTrue();
+        Assertions.assertThat(foundBook.get().getId()).isEqualTo(book.getId());
+        Assertions.assertThat(foundBook.get().getTitle()).isEqualTo(book.getTitle());
+        Assertions.assertThat(foundBook.get().getAuthor()).isEqualTo(book.getAuthor());
+        Assertions.assertThat(foundBook.get().getIsbn()).isEqualTo(book.getIsbn());
+    }
+
+    @Test
     @DisplayName("Deve excluir um livro")
     public void serviceShouldDeleteBook() {
         book.setId(1L);
