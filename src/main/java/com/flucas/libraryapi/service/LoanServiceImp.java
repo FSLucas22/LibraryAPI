@@ -3,13 +3,14 @@ package com.flucas.libraryapi.service;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.model.repository.LoanRepository;
 
-public class LoanServiceImp {
+import lombok.RequiredArgsConstructor;
 
-    public LoanServiceImp(LoanRepository repository) {
-    }
+
+@RequiredArgsConstructor
+public class LoanServiceImp {
+    private final LoanRepository repository;
 
     public Loan save(Loan loan) {
-        return null;
+        return repository.save(loan);
     }
-
 }
