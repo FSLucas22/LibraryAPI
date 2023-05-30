@@ -124,7 +124,7 @@ public class BookServiceTest {
         book.setId(id);
         Mockito.when(repository.findByIsbn("123"))
             .thenReturn(Optional.of(book));
-        var foundBook = service.getById(id);
+        var foundBook = service.getByIsbn("123");
         Assertions.assertThat(foundBook.isPresent()).isTrue();
         Assertions.assertThat(foundBook.get().getId()).isEqualTo(book.getId());
         Assertions.assertThat(foundBook.get().getTitle()).isEqualTo(book.getTitle());
