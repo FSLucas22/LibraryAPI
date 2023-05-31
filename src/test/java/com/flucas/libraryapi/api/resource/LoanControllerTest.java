@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Optional;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,19 +49,36 @@ public class LoanControllerTest {
     @MockBean
     LoanService loanService;
 
+    private LoanDTO dto;
+
+    @BeforeEach
+    public void setUp() {
+        this.dto = LoanDTO.builder().isbn("123").customer("customer").build();
+    }
+
+    public Book createBook(Long id, String isbn) {
+        return Book.builder()
+            .id(id)
+            .isbn(isbn)
+            .build();
+    }
+
+    public Loan createLoan(Long id, String customer, Book book) {
+        return Loan.builder().id(id).book(book).isbn(book.getIsbn()).customer(customer).build();
+    }
+
     @Test
     @DisplayName("Deve realizar um emprestimo")
     public void shouldLoanBook() throws Exception {
-        LoanDTO dto = LoanDTO.builder().isbn("123").customer("customer").build();
+        String isbn = "123";
+        String customer = "customer";
+        Book book = createBook(1L, isbn);
+        Loan loan = createLoan(10L, customer, book);
+
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(
-            Optional.of(Book.builder()
-                            .id(1L)
-                            .isbn("123")
-                            .build()));
-        
-        Loan loan = Loan.builder().id(10L).isbn("123").customer("customer").build();
+            Optional.of(book));
 
         BDDMockito.given(loanService.save(any(Loan.class))).willReturn(loan);
 
@@ -78,7 +96,6 @@ public class LoanControllerTest {
     @Test
     @DisplayName("Deve retornar BAD REQUEST quando o livro não existe")
     public void shouldNotLoanInexistentBook() throws Exception {
-        LoanDTO dto = LoanDTO.builder().isbn("123").customer("customer").build();
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(Optional.empty());
@@ -116,14 +133,10 @@ public class LoanControllerTest {
     @DisplayName("Deve retornar BAD REQUEST quando o livro já estiver emprestado")
     public void shouldNotLoanSameBookTwice() throws Exception {
         String isbn = "123";
-        LoanDTO dto = LoanDTO.builder().isbn(isbn).customer("customer").build();
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(
-            Optional.of(Book.builder()
-                            .id(1L)
-                            .isbn("123")
-                            .build()));
+            Optional.of(createBook(1L, isbn)));
 
         BDDMockito.given(loanService.save(any(Loan.class)))
             .willThrow(new BusinessException("Book already loaned"));
