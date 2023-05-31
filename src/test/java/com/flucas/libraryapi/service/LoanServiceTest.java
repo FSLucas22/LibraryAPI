@@ -58,7 +58,7 @@ public class LoanServiceTest {
         String isbn = "123";
         var loan = createValidLoan(null, createBook(1L, isbn));
         var service = new LoanServiceImp(repository);
-        when(repository.existsByBook(loan.getBook())).thenReturn(true);
+        when(repository.existsByBookAndNotReturned(loan.getBook())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable(() -> service.save(loan));
 
