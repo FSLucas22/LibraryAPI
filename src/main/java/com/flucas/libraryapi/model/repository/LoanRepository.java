@@ -6,5 +6,5 @@ import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.entity.Loan;
 
 public interface LoanRepository extends JpaRepository<Loan, Long>{
-    boolean existsByBook(Book book);
+    boolean existsByBookAndNotReturned(Book book);
 }
