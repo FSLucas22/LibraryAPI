@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.flucas.libraryapi.exceptions.BusinessException;
+import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.model.repository.LoanRepository;
 
@@ -22,29 +23,43 @@ public class LoanServiceTest {
     @MockBean
     LoanRepository repository;
 
-    public Loan createValidLoan(Long id) {
-        return Loan.builder().id(id).customer("Customer").isbn("123").build();
+    public Loan createValidLoan(Long id, String isbn, Book book) {
+        return Loan.builder().id(id).book(book).customer("Customer").isbn(isbn).build();
+    }
+
+    public Book createBook(Long id, String isbn) {
+        return Book.builder()
+            .id(id)
+            .isbn(isbn)
+            .build();
     }
 
     @Test
     @DisplayName("Service deve salvar um empréstimo")
     public void shouldSaveLoan() {
-        var loan = createValidLoan(null);
+        String isbn = "123";
+        var book = createBook(10L, isbn);
+        var loan = createValidLoan(null, isbn, book);
         var service = new LoanServiceImp(repository);
-        var savedLoan = createValidLoan(1L);
+        var savedLoan = createValidLoan(1L, isbn, book);
+
         when(repository.save(loan)).thenReturn(savedLoan);
         var savingLoan = service.save(loan);
+
         assertThat(savingLoan.getId()).isEqualTo(savedLoan.getId());
+        assertThat(savedLoan.getBook().getId()).isEqualTo(book.getId());
         assertThat(savingLoan.getIsbn()).isEqualTo(savedLoan.getIsbn());
+        assertThat(savingLoan.getCustomer()).isEqualTo(savedLoan.getCustomer());
         assertThat(savingLoan.getCustomer()).isEqualTo(savedLoan.getCustomer());
     }
 
     @Test
     @DisplayName("Deve lançar BusinessException ao tentar salvar empréstimo de livro já emprestado")
     public void shouldThrowBusinessExceptionOnSavingLoanedBook() {
-        var loan = createValidLoan(null);
+        String isbn = "123";
+        var loan = createValidLoan(null, isbn, createBook(1L, isbn));
         var service = new LoanServiceImp(repository);
-        when(repository.existsByIsbn(loan.getIsbn())).thenReturn(true);
+        when(repository.existsByBook(loan.getBook())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable(() -> service.save(loan));
 
