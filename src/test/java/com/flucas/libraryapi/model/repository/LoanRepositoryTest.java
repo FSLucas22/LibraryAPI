@@ -27,7 +27,6 @@ public class LoanRepositoryTest {
 
     public Book createValidBook() {
         return Book.builder()
-            .id(1L)
             .title("title")
             .author("author")
             .isbn("123")
