@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class Loan {
     private Long id;
     private Book book;
-    private String isbn;
     private String customer;
 }
