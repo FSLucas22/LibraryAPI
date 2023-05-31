@@ -12,7 +12,7 @@ public class LoanServiceImp {
     private final LoanRepository repository;
 
     public Loan save(Loan loan) {
-        if (repository.existsByIsbn(loan.getIsbn())) {
+        if (repository.existsByBook(loan.getBook())) {
             throw new BusinessException("Book already loaned");
         }
         return repository.save(loan);
