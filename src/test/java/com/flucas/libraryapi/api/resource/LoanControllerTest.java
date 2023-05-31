@@ -64,7 +64,7 @@ public class LoanControllerTest {
     }
 
     public Loan createLoan(Long id, String customer, Book book) {
-        return Loan.builder().id(id).book(book).isbn(book.getIsbn()).customer(customer).build();
+        return Loan.builder().id(id).book(book).customer(customer).build();
     }
 
     @Test
