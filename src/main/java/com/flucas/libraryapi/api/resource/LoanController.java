@@ -2,6 +2,8 @@ package com.flucas.libraryapi.api.resource;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
+import com.flucas.libraryapi.api.dto.ReturnedLoanDTO;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.service.interfaces.BookService;
 import com.flucas.libraryapi.service.interfaces.LoanService;
@@ -37,5 +40,10 @@ public class LoanController {
         var loanToSave = modelMapper.map(dto, Loan.class);
         var loan = loanService.save(loanToSave);
         return loan.getId();
+    }
+
+    @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void returnBook(@PathVariable Long id, @RequestBody ReturnedLoanDTO dto) {
     }
 }
