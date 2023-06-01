@@ -3,7 +3,10 @@ package com.flucas.libraryapi.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +18,7 @@ import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.model.repository.LoanRepository;
+import com.flucas.libraryapi.service.interfaces.LoanService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -22,6 +26,13 @@ public class LoanServiceTest {
 
     @MockBean
     LoanRepository repository;
+
+    private LoanService service;
+    
+    @BeforeEach
+    public void setUp() {
+        service = new LoanServiceImp(repository);
+    }
 
     public Loan createValidLoan(Long id, Book book) {
         return Loan.builder().id(id).book(book).customer("Customer").build();
@@ -40,7 +51,6 @@ public class LoanServiceTest {
         String isbn = "123";
         var book = createBook(10L, isbn);
         var loan = createValidLoan(null, book);
-        var service = new LoanServiceImp(repository);
         var savedLoan = createValidLoan(1L, book);
 
         when(repository.save(loan)).thenReturn(savedLoan);
@@ -57,7 +67,6 @@ public class LoanServiceTest {
     public void shouldThrowBusinessExceptionOnSavingLoanedBook() {
         String isbn = "123";
         var loan = createValidLoan(null, createBook(1L, isbn));
-        var service = new LoanServiceImp(repository);
         when(repository.existsByBookAndNotReturned(loan.getBook())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable(() -> service.save(loan));
@@ -65,5 +74,22 @@ public class LoanServiceTest {
         assertThat(exception)
             .isInstanceOf(BusinessException.class)
             .hasMessage("Book already loaned");
+    }
+
+    @Test
+    @DisplayName("Deve retornar detalhes de um empréstimo")
+    public void shouldReturnLoanDetails() {
+        long id = 1L;
+        var loan = createValidLoan(id, createBook(10L, "123"));
+        
+        when(repository.findById(id)).thenReturn(Optional.of(loan));
+        
+        var gotLoan = service.getById(id);
+
+        assertThat(gotLoan).isPresent();
+        assertThat(gotLoan.get().getId()).isEqualTo(id);
+        assertThat(gotLoan.get().getBook().getId()).isEqualTo(loan.getBook().getId());
+        assertThat(gotLoan.get().getCustomer()).isEqualTo(loan.getCustomer());
+        assertThat(gotLoan.get().getReturned()).isEqualTo(loan.getReturned());
     }
 }
