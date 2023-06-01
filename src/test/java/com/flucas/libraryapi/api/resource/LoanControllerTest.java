@@ -2,7 +2,6 @@ package com.flucas.libraryapi.api.resource;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -165,7 +164,7 @@ public class LoanControllerTest {
 
         mvc
             .perform(
-                patch(LOAN_API.concat("/" + 1L))
+                patch(LOAN_API.concat("/1"))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
