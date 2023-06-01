@@ -1,5 +1,6 @@
 package com.flucas.libraryapi.api.resource;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -194,8 +195,10 @@ public class LoanControllerTest {
                 patch(LOAN_API.concat("/1"))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-            ).andExpect(status().isBadRequest());
+                .content(json))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("errors", hasSize(1)))
+            .andExpect(jsonPath("errors[0]").value("Loan not found for passed id"));
 
         verify(loanService, never()).update(any(Loan.class));
     }
