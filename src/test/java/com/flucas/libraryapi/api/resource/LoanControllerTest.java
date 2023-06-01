@@ -2,6 +2,7 @@ package com.flucas.libraryapi.api.resource;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -162,8 +163,10 @@ public class LoanControllerTest {
         var returnedDto = new ReturnedLoanDTO(true);
         var json = new ObjectMapper().writeValueAsString(returnedDto);
 
+        Loan loan = createLoan(1L, "customer", createBook(10L, "123"));
+
         given(loanService.getById(1L)).willReturn(
-            Optional.of(createLoan(1L, "customer", createBook(10L, "123"))));
+            Optional.of(loan));
             
         mvc
             .perform(
@@ -172,5 +175,7 @@ public class LoanControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
             ).andExpect(status().isOk());
+
+        verify(loanService).update(loan);
     }
 }
