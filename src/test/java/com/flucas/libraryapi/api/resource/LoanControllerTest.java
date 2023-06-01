@@ -2,6 +2,7 @@ package com.flucas.libraryapi.api.resource;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -177,5 +178,25 @@ public class LoanControllerTest {
             ).andExpect(status().isOk());
 
         verify(loanService).update(loan);
+    }
+
+    @Test
+    @DisplayName("Deve retornar BAD REQUEST quando o emprestimo é inexistente")
+    public void shouldNotReturnInexistentBook() throws Exception {
+        var returnedDto = new ReturnedLoanDTO(true);
+        var json = new ObjectMapper().writeValueAsString(returnedDto);
+
+        given(loanService.getById(1L)).willReturn(
+            Optional.empty());
+            
+        mvc
+            .perform(
+                patch(LOAN_API.concat("/1"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+            ).andExpect(status().isBadRequest());
+
+        verify(loanService, never()).update(any(Loan.class));
     }
 }
