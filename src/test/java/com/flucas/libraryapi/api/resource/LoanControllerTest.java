@@ -1,6 +1,9 @@
 package com.flucas.libraryapi.api.resource;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flucas.libraryapi.api.dto.LoanDTO;
+import com.flucas.libraryapi.api.dto.ReturnedLoanDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.entity.Loan;
@@ -77,10 +80,10 @@ public class LoanControllerTest {
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(
+        given(bookService.getByIsbn(dto.getIsbn())).willReturn(
             Optional.of(book));
 
-        BDDMockito.given(loanService.save(any(Loan.class))).willReturn(loan);
+        given(loanService.save(any(Loan.class))).willReturn(loan);
 
         var request = MockMvcRequestBuilders.post(LOAN_API)
             .accept(MediaType.APPLICATION_JSON)
@@ -98,7 +101,7 @@ public class LoanControllerTest {
     public void shouldNotLoanInexistentBook() throws Exception {
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(Optional.empty());
+        given(bookService.getByIsbn(dto.getIsbn())).willReturn(Optional.empty());
 
         var request = MockMvcRequestBuilders.post(LOAN_API)
             .accept(MediaType.APPLICATION_JSON)
@@ -135,10 +138,10 @@ public class LoanControllerTest {
         String isbn = "123";
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        BDDMockito.given(bookService.getByIsbn(dto.getIsbn())).willReturn(
+        given(bookService.getByIsbn(dto.getIsbn())).willReturn(
             Optional.of(createBook(1L, isbn)));
 
-        BDDMockito.given(loanService.save(any(Loan.class)))
+        given(loanService.save(any(Loan.class)))
             .willThrow(new BusinessException("Book already loaned"));
 
         var request = MockMvcRequestBuilders
@@ -152,5 +155,20 @@ public class LoanControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("errors", Matchers.hasSize(1)))
             .andExpect(jsonPath("errors[0]").value("Book already loaned"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar um livro emprestado")
+    public void shouldReturnABook() throws Exception {
+        var returnedDto = new ReturnedLoanDTO(true);
+        var json = new ObjectMapper().writeValueAsString(returnedDto);
+
+        mvc
+            .perform(
+                patch(LOAN_API.concat("/" + 1L))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+            ).andExpect(status().isOk());
     }
 }
