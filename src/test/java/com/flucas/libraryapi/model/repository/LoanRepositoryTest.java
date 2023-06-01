@@ -41,11 +41,26 @@ public class LoanRepositoryTest {
         Loan loan = Loan.builder()
             .book(book)
             .customer("customer")
-            .returned(false)
             .build();
         
         entityManager.persist(book);
         entityManager.persist(loan);
         assertThat(repository.existsByBookAndNotReturned(book)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve retornar true quando existe emprestimo de livro não retornado")
+    public void shouldReturnFalseWhenBookIsReturned() {
+    
+        Book book = createValidBook();
+        Loan loan = Loan.builder()
+            .book(book)
+            .customer("customer")
+            .returned(true)
+            .build();
+        
+        entityManager.persist(book);
+        entityManager.persist(loan);
+        assertThat(repository.existsByBookAndNotReturned(book)).isFalse();
     }
 }
