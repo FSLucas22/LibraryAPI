@@ -162,6 +162,9 @@ public class LoanControllerTest {
         var returnedDto = new ReturnedLoanDTO(true);
         var json = new ObjectMapper().writeValueAsString(returnedDto);
 
+        given(loanService.getById(1L)).willReturn(
+            Optional.of(createLoan(1L, "customer", createBook(10L, "123"))));
+            
         mvc
             .perform(
                 patch(LOAN_API.concat("/1"))
