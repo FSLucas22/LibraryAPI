@@ -196,7 +196,7 @@ public class LoanControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andExpect(jsonPath("errors", hasSize(1)))
             .andExpect(jsonPath("errors[0]").value("Loan not found for passed id"));
 
