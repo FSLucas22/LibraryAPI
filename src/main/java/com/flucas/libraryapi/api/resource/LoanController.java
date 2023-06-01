@@ -47,7 +47,7 @@ public class LoanController {
     public void returnBook(@PathVariable Long id, @RequestBody ReturnedLoanDTO dto) {
         var loan = loanService.getById(id).orElseThrow(
             () -> new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Loan not found for passed id"
+                HttpStatus.NOT_FOUND, "Loan not found for passed id"
             )
         );
         loan.setReturned(dto.returned());
