@@ -23,8 +23,7 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public Optional<Loan> getById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getById'");
+        return repository.findById(id);
     }
 
     @Override
