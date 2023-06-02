@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -130,7 +131,8 @@ public class LoanServiceTest {
         Page<Loan> page = new PageImpl<Loan>(
             loanList, pageRequest, 1);
 
-        when(repository.findByBookIsbnOrCustomer(filter.isbn(), filter.customer()))
+        when(repository.findByBookIsbnOrCustomer(Mockito.anyString(), Mockito.anyString()
+            ,Mockito.any(PageRequest.class)))
             .thenReturn(page);
 
         var result = service.find(filter, pageRequest);
