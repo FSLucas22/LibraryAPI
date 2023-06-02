@@ -130,7 +130,7 @@ public class LoanServiceTest {
         Page<Loan> page = new PageImpl<Loan>(
             loanList, pageRequest, 1);
 
-        when(repository.findAll(ArgumentMatchers.<Example<Loan>>any(), any(PageRequest.class)))
+        when(repository.findByBookIsbnOrCustomer(filter.isbn(), filter.customer()))
             .thenReturn(page);
 
         var result = service.find(filter, pageRequest);
