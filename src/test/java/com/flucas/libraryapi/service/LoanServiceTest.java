@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -129,7 +130,7 @@ public class LoanServiceTest {
             loanList, pageRequest, 1);
 
         when(repository.findByBookIsbnOrCustomer(Mockito.anyString(), Mockito.anyString()
-            ,Mockito.any(PageRequest.class)))
+            ,Mockito.any(Pageable.class)))
             .thenReturn(page);
 
         var result = service.find(filter, pageRequest);

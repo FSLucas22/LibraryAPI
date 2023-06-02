@@ -38,7 +38,6 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public Page<Loan> find(LoanFilterDTO filter, Pageable pageRequest) {
-        var request = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize());
-        return repository.findByBookIsbnOrCustomer(filter.isbn(), filter.customer(), request);
+        return repository.findByBookIsbnOrCustomer(filter.isbn(), filter.customer(), pageRequest);
     }
 }
