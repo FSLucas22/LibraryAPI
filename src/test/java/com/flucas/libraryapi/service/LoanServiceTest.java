@@ -92,4 +92,22 @@ public class LoanServiceTest {
         assertThat(gotLoan.get().getCustomer()).isEqualTo(loan.getCustomer());
         assertThat(gotLoan.get().getReturned()).isEqualTo(loan.getReturned());
     }
+
+    @Test
+    @DisplayName("Deve atualizar um empréstimo")
+    public void shouldUpdateLoan() {
+        long id = 1L;
+        var loan = createValidLoan(id, createBook(10L, "123"));
+        var savedLoan = createValidLoan(id, createBook(10L, "123"));
+        savedLoan.setReturned(true);
+
+        when(repository.save(loan)).thenReturn(savedLoan);
+        
+        var savingLoan = service.update(loan);
+
+        assertThat(savingLoan.getId()).isEqualTo(savedLoan.getId());
+        assertThat(savingLoan.getBook().getId()).isEqualTo(savedLoan.getBook().getId());
+        assertThat(savingLoan.getCustomer()).isEqualTo(savedLoan.getCustomer());
+        assertThat(savingLoan.getReturned()).isEqualTo(savedLoan.getReturned());
+    }
 }
