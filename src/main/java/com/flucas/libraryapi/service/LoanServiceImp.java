@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.flucas.libraryapi.api.dto.LoanFilterDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
+@Service
 public class LoanServiceImp implements LoanService {
     private final LoanRepository repository;
 
