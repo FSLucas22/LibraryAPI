@@ -2,6 +2,10 @@ package com.flucas.libraryapi.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.flucas.libraryapi.api.dto.LoanFilterDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.model.repository.LoanRepository;
@@ -29,5 +33,11 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Loan update(Loan loan) {
         return repository.save(loan);
+    }
+
+    @Override
+    public Page<Loan> find(LoanFilterDTO filter, Pageable pageRequest) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'find'");
     }
 }
