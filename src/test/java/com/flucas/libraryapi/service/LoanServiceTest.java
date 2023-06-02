@@ -1,8 +1,11 @@
 package com.flucas.libraryapi.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -10,10 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.flucas.libraryapi.api.dto.LoanFilterDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.entity.Loan;
@@ -109,5 +118,25 @@ public class LoanServiceTest {
         assertThat(savingLoan.getBook().getId()).isEqualTo(savedLoan.getBook().getId());
         assertThat(savingLoan.getCustomer()).isEqualTo(savedLoan.getCustomer());
         assertThat(savingLoan.getReturned()).isEqualTo(savedLoan.getReturned());
+    }
+
+    @Test
+    @DisplayName("Deve filtrar empréstimos pelas propriedades")
+    public void shouldFindLoansByFilters() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Loan loan = createValidLoan(1L, createBook(10L, "123"));
+        LoanFilterDTO filter = new LoanFilterDTO("123", "customer");
+        List<Loan> loanList = Arrays.asList(loan);
+        Page<Loan> page = new PageImpl<Loan>(
+            loanList, pageRequest, 1);
+
+        when(repository.findAll(ArgumentMatchers.<Example<Loan>>any(), any(PageRequest.class)))
+            .thenReturn(page);
+
+        var result = service.find(filter, pageRequest);
+        Assertions.assertThat(result.getTotalElements()).isEqualTo(1);
+        Assertions.assertThat(result.getContent()).isEqualTo(loanList);
+        Assertions.assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        Assertions.assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 }
