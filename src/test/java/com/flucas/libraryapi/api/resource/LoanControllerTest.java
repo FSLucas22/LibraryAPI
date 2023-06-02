@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.hamcrest.Matchers;
@@ -20,6 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,6 +33,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flucas.libraryapi.api.dto.LoanDTO;
+import com.flucas.libraryapi.api.dto.LoanFilterDTO;
 import com.flucas.libraryapi.api.dto.ReturnedLoanDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
@@ -201,5 +206,33 @@ public class LoanControllerTest {
             .andExpect(jsonPath("errors[0]").value("Loan not found for passed id"));
 
         verify(loanService, never()).update(any(Loan.class));
+    }
+
+    @Test
+    @DisplayName("Controller deve filtrar empréstimos")
+    public void shouldFilterBooks() throws Exception {
+        long id = 1L;
+        var filterDto = new LoanFilterDTO("123", "customer");
+
+        var loan = createLoan(id, "customer", createBook(10L, "123"));
+
+        given(loanService.find(any(LoanFilterDTO.class), any(Pageable.class)))
+                  .willReturn(
+                        new PageImpl<Loan>(Arrays.asList(loan), PageRequest.of(0, 100), 
+                        1));
+
+        String query = String.format("?isbn=%s&customer=%s&page=0&size=100", 
+                                     filterDto.isbn(), filterDto.customer());
+        
+        var request = MockMvcRequestBuilders.get(LOAN_API.concat(query))
+                .accept(MediaType.APPLICATION_JSON);
+        
+        mvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
     }
 }
