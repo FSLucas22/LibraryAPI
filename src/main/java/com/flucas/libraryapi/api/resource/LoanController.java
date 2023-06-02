@@ -1,7 +1,13 @@
 package com.flucas.libraryapi.api.resource;
 
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.LoanDTO;
+import com.flucas.libraryapi.api.dto.LoanFilterDTO;
 import com.flucas.libraryapi.api.dto.ReturnedLoanDTO;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.service.interfaces.BookService;
@@ -52,5 +59,19 @@ public class LoanController {
         );
         loan.setReturned(dto.returned());
         loanService.update(loan);
+    }
+
+    @GetMapping
+    public Page<LoanDTO> find(LoanFilterDTO dto, Pageable pageRequest) {
+        var result = loanService.find(dto, pageRequest);
+        return new PageImpl<LoanDTO>(
+            result.getContent()
+            .stream()
+            .map(loan -> {
+                var loanDto = modelMapper.map(loan, LoanDTO.class);
+                loanDto.setIsbn(loan.getBook().getIsbn());
+                return loanDto;
+            })
+            .collect(Collectors.toList()), pageRequest, result.getTotalElements());
     }
 }
