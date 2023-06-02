@@ -27,8 +27,7 @@ public class LoanServiceImp implements LoanService {
     }
 
     @Override
-    public void update(Loan loan) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public Loan update(Loan loan) {
+        return repository.save(loan);
     }
 }
