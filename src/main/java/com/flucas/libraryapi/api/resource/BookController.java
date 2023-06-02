@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.flucas.libraryapi.api.dto.BookDTO;
+import com.flucas.libraryapi.api.dto.LoanDTO;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.service.interfaces.BookService;
+import com.flucas.libraryapi.service.interfaces.LoanService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class BookController {
 
     private final BookService service;
     private final ModelMapper modelMapper;
+    private final LoanService loanService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -80,5 +83,18 @@ public class BookController {
             .stream()
             .map(book -> modelMapper.map(book, BookDTO.class))
             .collect(Collectors.toList()), pageRequest, result.getTotalElements());
+    }
+
+    @GetMapping("{id}/loans")
+    public Page<LoanDTO> loansByBook(@PathVariable Long id, Pageable pageable) {
+        var book = service.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        var result = loanService.getLoansByBook(book, pageable);
+        return new PageImpl<LoanDTO>(result.getContent().stream()
+            .map(loan -> {
+                var loanDto = modelMapper.map(loan, LoanDTO.class);
+                loanDto.setIsbn(book.getIsbn());
+                return loanDto;
+            })
+            .collect(Collectors.toList()), pageable, result.getTotalElements());
     }
 }

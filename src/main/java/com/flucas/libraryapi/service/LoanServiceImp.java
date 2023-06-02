@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.flucas.libraryapi.api.dto.LoanFilterDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
+import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.model.entity.Loan;
 import com.flucas.libraryapi.model.repository.LoanRepository;
 import com.flucas.libraryapi.service.interfaces.LoanService;
@@ -38,5 +39,10 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Page<Loan> find(LoanFilterDTO filter, Pageable pageRequest) {
         return repository.findByBookIsbnOrCustomer(filter.isbn(), filter.customer(), pageRequest);
+    }
+
+    @Override
+    public Page<Loan> getLoansByBook(Book book, Pageable pageable) {
+        return repository.findByBook(book, pageable);
     }
 }
