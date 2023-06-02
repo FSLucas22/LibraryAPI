@@ -210,7 +210,7 @@ public class LoanControllerTest {
 
     @Test
     @DisplayName("Controller deve filtrar empréstimos")
-    public void shouldFilterBooks() throws Exception {
+    public void shouldFilterLoans() throws Exception {
         long id = 1L;
         var filterDto = new LoanFilterDTO("123", "customer");
 
