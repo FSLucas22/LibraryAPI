@@ -3,6 +3,7 @@ package com.flucas.libraryapi.service;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.flucas.libraryapi.api.dto.LoanFilterDTO;
@@ -37,7 +38,7 @@ public class LoanServiceImp implements LoanService {
 
     @Override
     public Page<Loan> find(LoanFilterDTO filter, Pageable pageRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'find'");
+        var request = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize());
+        return repository.findByBookIsbnOrCustomer(filter.isbn(), filter.customer(), request);
     }
 }
