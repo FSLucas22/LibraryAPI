@@ -1,5 +1,6 @@
 package com.flucas.libraryapi.api.resource;
 
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -45,6 +46,7 @@ public class LoanController {
                 HttpStatus.BAD_REQUEST, "Book not found for passed isbn");
         } 
         var loanToSave = modelMapper.map(dto, Loan.class);
+        loanToSave.setLoanDate(LocalDate.now());
         var loan = loanService.save(loanToSave);
         return loan.getId();
     }

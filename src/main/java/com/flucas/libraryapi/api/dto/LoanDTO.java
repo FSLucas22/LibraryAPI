@@ -20,5 +20,7 @@ public class LoanDTO {
     @NotEmpty
     private String customer;
 
+    private String email;
+
     private BookDTO book;
 }

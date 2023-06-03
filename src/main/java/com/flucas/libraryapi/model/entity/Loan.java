@@ -1,5 +1,7 @@
 package com.flucas.libraryapi.model.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +34,12 @@ public class Loan {
 
     @Column(length = 255)
     private String customer;
+
+    @Column(name="customer_email")
+    private String email;
+
+    @Column
+    private LocalDate loanDate;
 
     @Column
     private Boolean returned;
