@@ -2,6 +2,9 @@ package com.flucas.libraryapi.model.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
+import org.hibernate.validator.internal.constraintvalidators.hv.ISBNValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,19 +29,27 @@ public class LoanRepositoryTest {
     @Autowired
     LoanRepository repository;
 
-    public Book createValidBook() {
+    public Book createValidBook(String isbn) {
         return Book.builder()
             .title("title")
             .author("author")
-            .isbn("123")
+            .isbn(isbn)
             .build();
+    }
+
+    public Loan createLoan(LocalDate date, Book book, Boolean returned) {
+        return Loan.builder()
+            .customer("customer")
+            .book(book)
+            .loanDate(date)
+            .returned(returned).build();
     }
 
     @Test
     @DisplayName("Deve retornar true quando existe emprestimo de livro não retornado")
     public void shouldReturnTrueWhenBookIsNotReturned() {
     
-        Book book = createValidBook();
+        Book book = createValidBook("123");
         Loan loan = Loan.builder()
             .book(book)
             .customer("customer")
@@ -53,7 +64,7 @@ public class LoanRepositoryTest {
     @DisplayName("Deve retornar true quando existe emprestimo de livro não retornado")
     public void shouldReturnFalseWhenBookIsReturned() {
     
-        Book book = createValidBook();
+        Book book = createValidBook("123");
         Loan loan = Loan.builder()
             .book(book)
             .customer("customer")
@@ -68,7 +79,7 @@ public class LoanRepositoryTest {
     @Test
     @DisplayName("Deve filtrar empréstimos")
     public void shouldFilterLoans() {
-        var book = createValidBook();
+        var book = createValidBook("123");
         var loan = Loan.builder()
             .book(book)
             .customer("custumer")
@@ -87,5 +98,29 @@ public class LoanRepositoryTest {
         assertThat(result_loan.getCustomer()).isEqualTo(loan.getCustomer());
         assertThat(result_loan.getBook().getId()).isEqualTo(book.getId());
         assertThat(result_loan.getBook().getIsbn()).isEqualTo(book.getIsbn());
+    }
+
+    @Test
+    @DisplayName("Deve retornar os empréstimos atrasados")
+    public void shouldReturnLateLoans() {
+        var bookReturned = createValidBook("123");
+        var bookOnDate = createValidBook("456");
+        var bookLate = createValidBook("789");
+        var loanReturned = createLoan(LocalDate.now().minusDays(6), bookReturned, true);
+        var loanOnDate = createLoan(LocalDate.now().minusDays(3), bookOnDate, false);
+        var loanLate = createLoan(LocalDate.now().minusDays(4), bookLate, null);
+
+        entityManager.persist(bookReturned);
+        entityManager.persist(bookOnDate);
+        entityManager.persist(bookLate);
+        entityManager.persist(loanReturned);
+        entityManager.persist(loanOnDate);
+        entityManager.persist(loanLate);
+
+        var result = repository.findByLoanDateLessThanAndNotReturned(
+            LocalDate.now().minusDays(4));
+
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getId()).isEqualTo(loanLate.getId());
     }
 }

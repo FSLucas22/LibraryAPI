@@ -1,5 +1,7 @@
 package com.flucas.libraryapi.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -46,5 +48,12 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Page<Loan> getLoansByBook(Book book, Pageable pageable) {
         return repository.findByBook(book, pageable);
+    }
+
+    @Override
+    public List<Loan> getAllLateLoans() {
+        final Integer MAX_LOAN_DAYS = 4;
+        LocalDate threeDaysAgo = LocalDate.now().minusDays(MAX_LOAN_DAYS);
+        return repository.findByLoanDateLessThanAndNotReturned(threeDaysAgo);
     }
 }
