@@ -63,7 +63,10 @@ public class LoanControllerTest {
 
     @BeforeEach
     public void setUp() {
-        this.dto = LoanDTO.builder().isbn("123").customer("customer").build();
+        this.dto = LoanDTO.builder()
+            .isbn("123")
+            .customer("customer")
+            .email("email@email.com").build();
     }
 
     public Book createBook(Long id, String isbn) {
@@ -74,7 +77,7 @@ public class LoanControllerTest {
     }
 
     public Loan createLoan(Long id, String customer, Book book) {
-        return Loan.builder().id(id).book(book).customer(customer).build();
+        return Loan.builder().id(id).book(book).customer(customer).email("email@email.com").build();
     }
 
     @Test
@@ -136,7 +139,7 @@ public class LoanControllerTest {
         mvc
             .perform(request)
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("errors", Matchers.hasSize(2)));
+            .andExpect(jsonPath("errors", Matchers.hasSize(3)));
     }
 
     @Test
