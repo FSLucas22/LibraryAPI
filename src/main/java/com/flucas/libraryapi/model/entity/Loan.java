@@ -1,43 +1,46 @@
 package com.flucas.libraryapi.model.entity;
 
-
-import java.util.List;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table
-@Data
-public class Book {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Loan {
+
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String title;
+    @JoinColumn(name="id_book")
+    @ManyToOne
+    private Book book;
+
+    @Column(length = 255)
+    private String customer;
+
+    @Column(name="customer_email")
+    private String email;
 
     @Column
-    private String author;
+    private LocalDate loanDate;
 
     @Column
-    private String isbn;
-
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    private List<Loan> loans;
+    private Boolean returned;
 }
