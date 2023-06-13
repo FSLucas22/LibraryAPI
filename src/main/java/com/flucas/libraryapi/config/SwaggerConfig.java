@@ -31,14 +31,14 @@ public class SwaggerConfig {
         var contact = new Contact();
         contact.setEmail(email);
         contact.setName("Lucas FS");
-        
+        contact.setUrl("https://github.com/FSLucas22");
         var mitLicense = new License().name("MIT License").url("https://choosealicense.com/licenses/mit/");
 
         var info = new Info()
             .title("Library API")
-            .version("0.1")
+            .version("1.0")
             .contact(contact)
-            .description("This API exposes endpoints to a library database")
+            .description("API do projeto de controle de aluguel de livros")
             .license(mitLicense);
         
         return new OpenAPI().info(info).servers(List.of(server));
