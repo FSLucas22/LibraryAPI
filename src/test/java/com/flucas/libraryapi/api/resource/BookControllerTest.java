@@ -34,6 +34,7 @@ import com.flucas.libraryapi.api.dto.BookDTO;
 import com.flucas.libraryapi.exceptions.BusinessException;
 import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.service.interfaces.BookService;
+import com.flucas.libraryapi.service.interfaces.LoanService;
 
 
 @ExtendWith(SpringExtension.class)
@@ -48,6 +49,9 @@ public class BookControllerTest {
 
     @MockBean
     private BookService service;
+
+    @MockBean
+    private LoanService loanService;
 
     private BookDTO dto;
     private Book book;
