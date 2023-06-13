@@ -25,6 +25,10 @@ import com.flucas.libraryapi.model.entity.Book;
 import com.flucas.libraryapi.service.interfaces.BookService;
 import com.flucas.libraryapi.service.interfaces.LoanService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -32,12 +36,14 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
+@Tag(name = "Library API", description = "API de registro de livros")
 public class BookController {
 
     private final BookService service;
     private final ModelMapper modelMapper;
     private final LoanService loanService;
 
+    @Operation(summary = "Create a new book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookDTO create(@RequestBody @Valid BookDTO dto) {
@@ -47,6 +53,7 @@ public class BookController {
         return modelMapper.map(createdBook, BookDTO.class);
     }
 
+    @Operation(summary = "Get details about a created book by id")
     @GetMapping("{id}")
     public BookDTO get(@PathVariable Long id) {
         return service.getById(id)
@@ -54,6 +61,10 @@ public class BookController {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(summary = "Delete a created book by id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Book successfuly deleted")
+    })
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
@@ -62,6 +73,7 @@ public class BookController {
         service.delete(book);
     }
 
+    @Operation(summary = "Update a created book")
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public BookDTO update(@PathVariable Long id, @RequestBody @Valid BookDTO dto) {
@@ -74,6 +86,7 @@ public class BookController {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(summary = "Filter books by params")
     @GetMapping
     public Page<BookDTO> find(BookDTO dto, Pageable pageRequest) {
         Book filter = modelMapper.map(dto, Book.class);
@@ -85,6 +98,7 @@ public class BookController {
             .collect(Collectors.toList()), pageRequest, result.getTotalElements());
     }
 
+    @Operation(summary = "Filter loans of a book")
     @GetMapping("{id}/loans")
     public Page<LoanDTO> loansByBook(@PathVariable Long id, Pageable pageable) {
         var book = service.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
