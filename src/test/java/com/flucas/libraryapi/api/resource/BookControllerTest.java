@@ -281,4 +281,10 @@ public class BookControllerTest {
                 .andExpect(jsonPath("pageable.pageSize").value(100))
                 .andExpect(jsonPath("pageable.pageNumber").value(0));
     }
+
+    @Test
+    @DisplayName("Verify that Github Action vai detectar a falha no teste")
+    public void gitHubActionShouldComplain() {
+        throw new RuntimeException("Apenas para teste");
+    }
 }
